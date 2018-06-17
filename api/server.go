@@ -20,7 +20,7 @@ func InitServer() {
 
 func StartServer() {
 	go func() {
-		err := http.ListenAndServe(utils.ConfigParam.ServerConfig.Port, ServerObj.Router)
+		err := http.ListenAndServe(utils.GatewayConfigParam.ServerConfig.Port, ServerObj.Router)
 		if err != nil {
 			log.WithField("err", err).Fatal("Server starting failed.")
 			return

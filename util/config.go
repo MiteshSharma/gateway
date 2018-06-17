@@ -4,53 +4,43 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+
+	"github.com/Sirupsen/logrus"
 )
 
-type Config struct {
-	ServerConfig ServerConfig
-}
+var (
+	log = logrus.WithFields(logrus.Fields{
+		"package": "utils",
+	})
+)
 
-type ServerConfig struct {
-	Port string
+type ConfigParam interface {
+	LoadConfigFromJsonParser(d *json.Decoder)
+	SaveDefaultConfigParams()
 }
-
-var ConfigParam *Config = &Config{}
 
 func findConfigFile(fileName string) string {
 	if _, error := os.Stat("./" + fileName); error == nil {
 		fileName, _ = filepath.Abs("./" + fileName)
 	} else if _, error := os.Stat("./config/" + fileName); error == nil {
 		fileName, _ = filepath.Abs("./config/" + fileName)
-	} else if _, error := os.Stat("./src/github.com/MiteshSharma/gateway/config/" + fileName); error == nil {
-		fileName, _ = filepath.Abs("./src/github.com/MiteshSharma/gateway/config/" + fileName)
 	}
 	return fileName
 }
 
-func (o *Config) SaveDefaultConfigParams() {
-	if o.ServerConfig.Port == "" {
-		o.ServerConfig.Port = ":8080"
-	}
-}
-
-func LoadConfig(fileName string) {
+func loadConfigFromFile(fileName string, config ConfigParam) {
 	filePath := findConfigFile(fileName)
 
-	file, error := os.Open(filePath)
+	file, err := os.Open(filePath)
 
-	if error != nil {
-		panic("Error occured during config file reading " + error.Error())
+	if err != nil {
+		log.WithField("err", err).Fatal("Error occured during config file reading.")
+		panic("Error occured during config file reading " + err.Error())
 	}
 
 	jsonParser := json.NewDecoder(file)
 
-	config := Config{}
-
-	if jsonErr := jsonParser.Decode(&config); jsonErr != nil {
-		panic("Json parsing error" + jsonErr.Error())
-	}
-
+	log.Debug("Reading config params from file")
+	config.LoadConfigFromJsonParser(jsonParser)
 	config.SaveDefaultConfigParams()
-
-	ConfigParam = &config
 }
