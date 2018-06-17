@@ -4,11 +4,11 @@ import (
 	"net/http"
 
 	"github.com/MiteshSharma/gateway/util"
-	"github.com/gorilla/mux"
+	"github.com/urfave/negroni"
 )
 
 type Server struct {
-	Router *mux.Router
+	Router *negroni.Negroni
 }
 
 var ServerObj *Server
