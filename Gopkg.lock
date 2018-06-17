@@ -14,6 +14,16 @@
   version = "v1.0.5"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/afex/hystrix-go"
+  packages = [
+    "hystrix",
+    "hystrix/metric_collector",
+    "hystrix/rolling"
+  ]
+  revision = "fa1af6a1f4f56e0e50d427fe901cd604d8c6fb8a"
+
+[[projects]]
   name = "github.com/apache/thrift"
   packages = ["lib/go/thrift"]
   revision = "f5f430df56871bc937950274b2c86681d3db6e59"
@@ -42,6 +52,12 @@
   packages = ["."]
   revision = "44cc805cf13205b55f69e14bcb69867d1ae92f98"
   version = "v1.1.0"
+
+[[projects]]
+  name = "github.com/felixge/httpsnoop"
+  packages = ["."]
+  revision = "eadd4fad6aac69ae62379194fe0219f3dbc80fd3"
+  version = "v1.0.0"
 
 [[projects]]
   name = "github.com/go-logfmt/logfmt"
@@ -153,6 +169,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "dffcc82c8d30ddda430995a41bfdf9311913d75421d2c88d3eceb30bba7b12d5"
+  inputs-digest = "2bb6f4455c7a35b2e2bb1ae4fe844c52da64a9fe22abf1652c35e58b29e73b94"
   solver-name = "gps-cdcl"
   solver-version = 1

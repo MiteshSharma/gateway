@@ -18,6 +18,7 @@ func InitApi() *negroni.Negroni {
 	InitProxy(router)
 	n := negroni.New()
 	n.UseFunc(middleware.NewZipkinMiddleware().GetMiddlewareHandler())
+	n.UseFunc(middleware.NewHystrixMiddleware().GetMiddlewareHandler())
 	n.UseHandler(router)
 	return n
 }
