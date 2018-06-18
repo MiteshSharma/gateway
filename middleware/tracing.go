@@ -3,16 +3,9 @@ package middleware
 import (
 	"net/http"
 
-	"github.com/Sirupsen/logrus"
 	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
 	zipkin "github.com/openzipkin/zipkin-go-opentracing"
-)
-
-var (
-	log = logrus.WithFields(logrus.Fields{
-		"package": "middleware",
-	})
 )
 
 const (
