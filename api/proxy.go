@@ -6,7 +6,9 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/MiteshSharma/gateway/util"
 	"github.com/gorilla/mux"
+	"go.uber.org/zap"
 )
 
 type Registry interface {
@@ -34,16 +36,15 @@ func (h *ServiceProxyHandler) proxyHandler() func(http.ResponseWriter, *http.Req
 	return func(w http.ResponseWriter, r *http.Request) {
 		remoteUrl, err := h.registry.GetService(r.Host)
 		if err != nil {
-			log.WithField("err", err).Fatal("Remote url fetching failed.")
+			utils.Logger.Error("Error fetching service url ", zap.Error(err))
 			return
 		}
 
 		remote, err := url.Parse(remoteUrl)
 		if err != nil {
-			log.WithField("err", err).Fatal("Remote url parsing failed.")
+			utils.Logger.Error("Error parsing service url ", zap.Error(err))
 			return
 		}
-		log.Debug("Remote host to call " + remote.Hostname() + " " + remote.Port())
 		path := "/*catchall"
 		reverseProxy := httputil.NewSingleHostReverseProxy(remote)
 		reverseProxy.Director = func(req *http.Request) {
@@ -56,12 +57,9 @@ func (h *ServiceProxyHandler) proxyHandler() func(http.ResponseWriter, *http.Req
 			if strings.HasSuffix(proxyPath, "/") && len(proxyPath) > 1 {
 				proxyPath = proxyPath[:len(proxyPath)-1]
 			}
-			log.Debug("Proxy path to call " + proxyPath)
 			req.URL.Path = proxyPath
 		}
-		log.Debug("Reverse proxy calling.")
 		reverseProxy.ServeHTTP(w, r)
-		log.Debug("Reverse proxy called.")
 	}
 }
 

@@ -7,6 +7,7 @@ import (
 	"github.com/MiteshSharma/gateway/util"
 	"github.com/afex/hystrix-go/hystrix"
 	"github.com/felixge/httpsnoop"
+	"go.uber.org/zap"
 )
 
 type HystrixMiddleware struct {
@@ -33,19 +34,20 @@ func (hm *HystrixMiddleware) GetMiddlewareHandler() func(http.ResponseWriter, *h
 		serviceName := utils.GetServiceName(r.RequestURI)
 		err := hystrix.Do(serviceName, func() error {
 			metrix := httpsnoop.CaptureMetrics(next, rw, r)
-			log.WithField("response code", metrix.Code).Debug("Request received")
 			if metrix.Code >= 500 && metrix.Code < 600 {
-				log.WithField("hystrixCommand", serviceName).
-					WithField("StatusCode", metrix.Code).Warn("Backend failure for service: " + serviceName)
+				utils.Logger.Info("Received call in hystrix middleware ", zap.String("hystrixCommand", serviceName),
+					zap.Int("response code", metrix.Code))
 				return errors.New("Error received ")
+			} else {
+				utils.Logger.Info("Received call in hystrix middleware ", zap.String("hystrixCommand", serviceName))
 			}
 			return nil
 		}, func(err error) error {
-			log.WithError(err).WithField("hystrixCommand", serviceName).Warn("hystrix error handling")
+			utils.Logger.Error("Error during call in hystrix middleware ", zap.Error(err))
 			return nil
 		})
 		if err != nil {
-			log.WithError(err).WithField("hystrixCommand", serviceName).Error("hystrix request return with error")
+			utils.Logger.Error("Error failed call in hystrix middleware ", zap.Error(err))
 		}
 	}
 }

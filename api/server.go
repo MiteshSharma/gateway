@@ -5,6 +5,7 @@ import (
 
 	"github.com/MiteshSharma/gateway/util"
 	"github.com/urfave/negroni"
+	"go.uber.org/zap"
 )
 
 type Server struct {
@@ -22,7 +23,7 @@ func StartServer() {
 	go func() {
 		err := http.ListenAndServe(utils.GatewayConfigParam.ServerConfig.Port, ServerObj.Router)
 		if err != nil {
-			log.WithField("err", err).Fatal("Server starting failed.")
+			utils.Logger.Error("Error starting server ", zap.Error(err))
 			return
 		}
 	}()

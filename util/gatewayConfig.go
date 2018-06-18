@@ -1,6 +1,10 @@
 package utils
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"go.uber.org/zap"
+)
 
 type GatewayConfig struct {
 	ServerConfig ServerConfig
@@ -20,7 +24,7 @@ func (o GatewayConfig) SaveDefaultConfigParams() {
 
 func (o GatewayConfig) LoadConfigFromJsonParser(jsonParser *json.Decoder) {
 	if jsonErr := jsonParser.Decode(&GatewayConfigParam); jsonErr != nil {
-		panic("Json parsing error" + jsonErr.Error())
+		Logger.Error("Json parsing error: ", zap.Error(jsonErr))
 	}
 }
 

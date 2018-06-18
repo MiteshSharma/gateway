@@ -5,13 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/Sirupsen/logrus"
-)
-
-var (
-	log = logrus.WithFields(logrus.Fields{
-		"package": "utils",
-	})
+	"go.uber.org/zap"
 )
 
 type ConfigParam interface {
@@ -34,13 +28,13 @@ func loadConfigFromFile(fileName string, config ConfigParam) {
 	file, err := os.Open(filePath)
 
 	if err != nil {
-		log.WithField("err", err).Fatal("Error occured during config file reading.")
+		Logger.Error("Error occured during config file reading.", zap.Error(err))
 		panic("Error occured during config file reading " + err.Error())
 	}
 
 	jsonParser := json.NewDecoder(file)
 
-	log.Debug("Reading config params from file")
+	Logger.Debug("Reading config params from file")
 	config.LoadConfigFromJsonParser(jsonParser)
 	config.SaveDefaultConfigParams()
 }
