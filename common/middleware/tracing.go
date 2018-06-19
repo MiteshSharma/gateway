@@ -1,9 +1,9 @@
-package middleware
+package commonMiddleware
 
 import (
 	"net/http"
 
-	"github.com/MiteshSharma/gateway/util"
+	"github.com/MiteshSharma/gateway/common/util"
 	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
 	zipkin "github.com/openzipkin/zipkin-go-opentracing"
@@ -33,10 +33,10 @@ func NewZipkinMiddleware() *ZipkinMiddleware {
 
 func (zm *ZipkinMiddleware) Init() {
 	zipkinHTTPEndpoint := zm.ServiceHostPort + "/api/v1/spans"
-	utils.Logger.Info("Init zipkin middleware ", zap.String("zipkinEndpoint", zipkinHTTPEndpoint))
+	commomUtil.Logger.Info("Init zipkin middleware ", zap.String("zipkinEndpoint", zipkinHTTPEndpoint))
 	collector, err := zipkin.NewHTTPCollector(zipkinHTTPEndpoint)
 	if err != nil {
-		utils.Logger.Error("Creating collector failed in zipkin middleware ", zap.Error(err))
+		commomUtil.Logger.Error("Creating collector failed in zipkin middleware ", zap.Error(err))
 		panic("Creating tracer collector failed")
 	}
 	recorder := zipkin.NewRecorder(collector, debug, zm.ServiceHostPort, zm.ServiceName)
@@ -46,7 +46,7 @@ func (zm *ZipkinMiddleware) Init() {
 		zipkin.TraceID128Bit(traceID128Bit),
 	)
 	if err != nil {
-		utils.Logger.Error("Creating tracer failed ", zap.Error(err))
+		commomUtil.Logger.Error("Creating tracer failed ", zap.Error(err))
 		panic("Creating tracer failed")
 	}
 	opentracing.InitGlobalTracer(tracer)
@@ -60,7 +60,7 @@ func (zm *ZipkinMiddleware) GetMiddlewareHandler() func(http.ResponseWriter, *ht
 			opentracing.HTTPHeadersCarrier(r.Header),
 		)
 		if err != nil {
-			utils.Logger.Debug("Error encountered while trying to extract span ", zap.Error(err))
+			commomUtil.Logger.Debug("Error encountered while trying to extract span ", zap.Error(err))
 		}
 		span := zm.tracer.StartSpan(r.URL.Path, ext.RPCServerOption(wireContext))
 		defer span.Finish()

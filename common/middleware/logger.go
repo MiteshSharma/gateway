@@ -1,10 +1,10 @@
-package middleware
+package commonMiddleware
 
 import (
 	"net/http"
 	"time"
 
-	"github.com/MiteshSharma/gateway/util"
+	"github.com/MiteshSharma/gateway/common/util"
 	"github.com/felixge/httpsnoop"
 	"go.uber.org/zap"
 )
@@ -25,7 +25,7 @@ func (lm *LoggerMiddleware) GetMiddlewareHandler() func(http.ResponseWriter, *ht
 	return func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 
 		metrix := httpsnoop.CaptureMetrics(next, rw, r)
-		utils.Logger.Info("Request handling completed from logger middleware ", zap.String("Host", r.Host),
+		commomUtil.Logger.Info("Request handling completed from logger middleware ", zap.String("Host", r.Host),
 			zap.String("Method", r.Method), zap.String("Request", r.RequestURI), zap.String("RemoteAddress", r.RemoteAddr),
 			zap.String("Referer", r.Referer()), zap.String("UserAgent", r.UserAgent()), zap.Int("StatusCode", metrix.Code),
 			zap.Int("Duration", int(metrix.Duration/time.Millisecond)))

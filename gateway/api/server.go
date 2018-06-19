@@ -3,7 +3,8 @@ package api
 import (
 	"net/http"
 
-	"github.com/MiteshSharma/gateway/util"
+	"github.com/MiteshSharma/gateway/common/util"
+	"github.com/MiteshSharma/gateway/gateway/util"
 	"github.com/urfave/negroni"
 	"go.uber.org/zap"
 )
@@ -23,7 +24,7 @@ func StartServer() {
 	go func() {
 		err := http.ListenAndServe(utils.GatewayConfigParam.ServerConfig.Port, ServerObj.Router)
 		if err != nil {
-			utils.Logger.Error("Error starting server ", zap.Error(err))
+			commomUtil.Logger.Error("Error starting server ", zap.Error(err))
 			return
 		}
 	}()

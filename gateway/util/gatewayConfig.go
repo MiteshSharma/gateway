@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/json"
 
+	"github.com/MiteshSharma/gateway/common/util"
 	"go.uber.org/zap"
 )
 
@@ -24,10 +25,10 @@ func (o GatewayConfig) SaveDefaultConfigParams() {
 
 func (o GatewayConfig) LoadConfigFromJsonParser(jsonParser *json.Decoder) {
 	if jsonErr := jsonParser.Decode(&GatewayConfigParam); jsonErr != nil {
-		Logger.Error("Json parsing error: ", zap.Error(jsonErr))
+		commomUtil.Logger.Error("Json parsing error: ", zap.Error(jsonErr))
 	}
 }
 
 func LoadConfig(fileName string) {
-	loadConfigFromFile(fileName, GatewayConfigParam)
+	commomUtil.LoadConfigFromFile(fileName, GatewayConfigParam)
 }

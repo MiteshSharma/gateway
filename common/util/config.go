@@ -1,4 +1,4 @@
-package utils
+package commomUtil
 
 import (
 	"encoding/json"
@@ -22,7 +22,7 @@ func findConfigFile(fileName string) string {
 	return fileName
 }
 
-func loadConfigFromFile(fileName string, config ConfigParam) {
+func LoadConfigFromFile(fileName string, config ConfigParam) {
 	filePath := findConfigFile(fileName)
 
 	file, err := os.Open(filePath)
