@@ -1,34 +1,26 @@
-package utils
+package util
 
 import (
 	"encoding/json"
 
+	"github.com/MiteshSharma/gateway/common/config"
 	"github.com/MiteshSharma/gateway/common/util"
-	"go.uber.org/zap"
 )
 
+// GatewayConfig struct contains all config details needed for this service
 type GatewayConfig struct {
-	ServerConfig ServerConfig
+	*config.Config
 }
 
-type ServerConfig struct {
-	Port string
-}
+// Init function to initialize config variable fetched from file detail provided
+func Init(fileName string) *GatewayConfig {
+	var config = GatewayConfig{}
 
-var GatewayConfigParam GatewayConfig = GatewayConfig{}
+	fileContent := util.GetConfigFileContent(fileName)
+	err := json.Unmarshal([]byte(fileContent), &config)
 
-func (o GatewayConfig) SaveDefaultConfigParams() {
-	if o.ServerConfig.Port == "" {
-		o.ServerConfig.Port = ":8080"
+	if err != nil {
+		panic("Config content not right")
 	}
-}
-
-func (o GatewayConfig) LoadConfigFromJsonParser(jsonParser *json.Decoder) {
-	if jsonErr := jsonParser.Decode(&GatewayConfigParam); jsonErr != nil {
-		commomUtil.Logger.Error("Json parsing error: ", zap.Error(jsonErr))
-	}
-}
-
-func LoadConfig(fileName string) {
-	commomUtil.LoadConfigFromFile(fileName, GatewayConfigParam)
+	return &config
 }

@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/MiteshSharma/gateway/common/util"
+	"github.com/MiteshSharma/gateway/common"
 	"github.com/gorilla/mux"
 	"go.uber.org/zap"
 )
@@ -36,13 +36,13 @@ func (h *ServiceProxyHandler) proxyHandler() func(http.ResponseWriter, *http.Req
 	return func(w http.ResponseWriter, r *http.Request) {
 		remoteUrl, err := h.registry.GetService(r.Host)
 		if err != nil {
-			commomUtil.Logger.Error("Error fetching service url ", zap.Error(err))
+			common.ServerObj.Logger.Error("Error fetching service url ", zap.Error(err))
 			return
 		}
 
 		remote, err := url.Parse(remoteUrl)
 		if err != nil {
-			commomUtil.Logger.Error("Error parsing service url ", zap.Error(err))
+			common.ServerObj.Logger.Error("Error parsing service url ", zap.Error(err))
 			return
 		}
 		path := "/*catchall"

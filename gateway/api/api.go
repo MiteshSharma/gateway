@@ -8,8 +8,7 @@ import (
 	"github.com/urfave/negroni"
 )
 
-func InitApi() *negroni.Negroni {
-	router := mux.NewRouter()
+func InitApi(router *mux.Router) *negroni.Negroni {
 	InitProxy(router)
 	n := negroni.New()
 	n.UseFunc(commonMiddleware.NewZipkinMiddleware().GetMiddlewareHandler())

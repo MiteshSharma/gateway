@@ -1,0 +1,8 @@
+{
+  "ServiceName": "Gateway",
+  "Config": {
+    "ServerConfig": {
+      "Port": ":8081"
+    }
+  }
+}
